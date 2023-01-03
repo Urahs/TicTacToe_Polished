@@ -1,13 +1,15 @@
 package com.example.tictactoe_with_fragments
 
+import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.fragment.app.activityViewModels
 import com.example.tictactoe_with_fragments.databinding.FragmentBoardBinding
-import com.example.tictactoe_with_fragments.databinding.FragmentControllerBinding
 
 class BoardFragment : Fragment() {
 
@@ -24,9 +26,31 @@ class BoardFragment : Fragment() {
         return binding.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        gameViewModel.test.observe(viewLifecycleOwner) {
+            setColorOfTheBox(it)
+        }
+
+        /*
+        gameViewModel.gameState.observe(viewLifecycleOwner) {
+            processGameStateChange(it)
+        }
+         */
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+
+    private fun setColorOfTheBox(coordinate: Coordinate){
+        Log.d("test", "AAAAAAAAAAAAA")
+        var selectedBox = view?.findViewById<TextView>(resources.getIdentifier("box_${coordinate.xCoordinate}${coordinate.yCoordinate}", "id", context?.packageName))
+        var textBackGroundColor = "#00FF00" //= if(isSelected) "#00FF00" else "#FF0000"
+        selectedBox?.setBackgroundColor(Color.parseColor(textBackGroundColor))
     }
 
 }

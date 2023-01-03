@@ -2,6 +2,7 @@ package com.example.tictactoe_with_fragments
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import com.example.tictactoe_with_fragments.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -13,5 +14,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         //_binding = ActivityMainBinding.inflate()
         setContentView(R.layout.activity_main)
+
     }
 }

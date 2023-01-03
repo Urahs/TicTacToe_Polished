@@ -2,6 +2,7 @@ package com.example.tictactoe_with_fragments
 
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -36,27 +37,27 @@ class ControllerFragment : Fragment() {
     }
 
     private fun onRestartButtonTapped() {
-
+        //gameViewModel.startNewGame()
     }
 
     private fun onActionButtonTapped() {
-        TODO("Not yet implemented")
+        //gameViewModel.xButtonClicked()
     }
 
     private fun onRightButtonTapped() {
-        TODO("Not yet implemented")
+        gameViewModel.boxSelection(true, true)
     }
 
     private fun onLeftButtonTapped() {
-        TODO("Not yet implemented")
+        gameViewModel.boxSelection(true, false)
     }
 
     private fun onDownButtonTapped() {
-        TODO("Not yet implemented")
+        gameViewModel.boxSelection(false, true)
     }
 
     private fun onUpButtonTapped() {
-        gameViewModel.boxSelection(false, true)
+        gameViewModel.boxSelection(false, false)
     }
 
 

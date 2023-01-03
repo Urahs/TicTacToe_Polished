@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#429C9F"
+    tools:context=".ControllerFragment">
+
+    <TextView
+        android:id="@+id/upButton"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:background="#DD4280"
+        android:text="▲"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="50sp"
+        app:layout_constraintBottom_toTopOf="@+id/downButton"
+        app:layout_constraintEnd_toStartOf="@+id/actionButton"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/restartButton"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <TextView
+        android:id="@+id/actionButton"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:background="#DD4280"
+        android:text="X"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="50sp"
+        app:layout_constraintBottom_toTopOf="@+id/rightButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/upButton"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.736" />
+
+    <TextView
+        android:id="@+id/restartButton"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:background="#DD4280"
+        android:text="R"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="50sp"
+        app:layout_constraintBottom_toTopOf="@+id/leftButton"
+        app:layout_constraintEnd_toStartOf="@+id/upButton"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.736" />
+
+    <TextView
+        android:id="@+id/downButton"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:background="#DD4280"
+        android:text="▼"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="50sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/rightButton"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/leftButton"
+        app:layout_constraintTop_toBottomOf="@+id/upButton" />
+
+    <TextView
+        android:id="@+id/leftButton"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:background="#DD4280"
+        android:text="◄"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="50sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/downButton"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/upButton"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/rightButton"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:background="#DD4280"
+        android:text="►"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="50sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/downButton"
+        app:layout_constraintTop_toBottomOf="@+id/upButton"
+        app:layout_constraintVertical_bias="0.0" />
+</androidx.constraintlayout.widget.ConstraintLayout>

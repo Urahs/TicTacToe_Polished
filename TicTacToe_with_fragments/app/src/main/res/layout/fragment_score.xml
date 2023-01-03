@@ -1,65 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:app="http://schemas.android.com/apk/res-auto"
-xmlns:tools="http://schemas.android.com/tools"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-android:background="#429C9F">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#429C9F">
 
-<TextView
-    android:id="@+id/scoreTV"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="SCORE"
-    android:textSize="30sp"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent" />
+    <TextView
+        android:id="@+id/scoreTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SCORE"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.166" />
 
-<TextView
-    android:id="@+id/youTV"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="8dp"
-    android:text="You: "
-    android:textSize="30sp"
-    app:layout_constraintEnd_toStartOf="@+id/aiScoreTV"
-    app:layout_constraintHorizontal_bias="0.5"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/scoreTV" />
+    <TextView
+        android:id="@+id/youTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="64dp"
+        android:layout_marginTop="8dp"
+        android:text="You: "
+        android:textSize="30sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/scoreTV" />
 
-<TextView
-    android:id="@+id/aiTV"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="AI: "
-    android:textSize="30sp"
-    app:layout_constraintBottom_toBottomOf="@+id/aiScoreTV"
-    app:layout_constraintEnd_toStartOf="@+id/aiScoreTV"
-    app:layout_constraintTop_toTopOf="@+id/aiScoreTV" />
+    <TextView
+        android:id="@+id/aiTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="120dp"
+        android:text="AI: "
+        android:textSize="30sp"
+        app:layout_constraintBottom_toBottomOf="@+id/youTV"
+        app:layout_constraintStart_toEndOf="@+id/playerScoreTV"
+        app:layout_constraintTop_toTopOf="@+id/youTV"
+        app:layout_constraintVertical_bias="0.0" />
 
-<TextView
-    android:id="@+id/playerScoreTV"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="0"
-    android:textSize="30sp"
-    app:layout_constraintBottom_toBottomOf="@+id/youTV"
-    app:layout_constraintStart_toEndOf="@+id/youTV"
-    app:layout_constraintTop_toTopOf="@+id/youTV" />
+    <TextView
+        android:id="@+id/playerScoreTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toBottomOf="@+id/youTV"
+        app:layout_constraintStart_toEndOf="@+id/youTV"
+        app:layout_constraintTop_toTopOf="@+id/youTV" />
 
-<TextView
-    android:id="@+id/aiScoreTV"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="8dp"
-    android:text="0"
-    android:textSize="30sp"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintHorizontal_bias="0.5"
-    app:layout_constraintStart_toEndOf="@+id/youTV"
-    app:layout_constraintTop_toBottomOf="@+id/scoreTV" />
+    <TextView
+        android:id="@+id/aiScoreTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toBottomOf="@+id/aiTV"
+        app:layout_constraintStart_toEndOf="@+id/aiTV"
+        app:layout_constraintTop_toTopOf="@+id/aiTV" />
 </androidx.constraintlayout.widget.ConstraintLayout>
 
 

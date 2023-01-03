@@ -1,7 +1,6 @@
 package com.example.tictactoe_with_fragments
 
 import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -9,33 +8,31 @@ import androidx.lifecycle.ViewModel
 class Coordinate(var xCoordinate: Int, var yCoordinate: Int)
 
 class GameState(){
-    var prevPos = Coordinate(0, 0)
-    var selectedPos = Coordinate(0, 0)
+    var prevPos = Coordinate(1, 1)
+    var selectedPos = Coordinate(1, 1)
     var boardCoordinates = Array(3) {Array(3, {" "})}
 }
 
 class GameViewModel: ViewModel() {
 
     private var recursionDepth = 0
+    var bestAIMoveCoordinate = Coordinate(0,0)
 
-    private val state: GameState = GameState()
+    val state: GameState = GameState()
     private val xButtonClickedFire: Boolean = false
     private val fireSignal: Boolean = false
-
-    private val _gameState: MutableLiveData<GameState> = MutableLiveData(state)
-    val gameState: LiveData<GameState> = _gameState
-
-    private val _selectedPos: MutableLiveData<Coordinate> = MutableLiveData(state.selectedPos)
-    val selectedPos: LiveData<Coordinate> = _selectedPos
-
-    private val _prevPos: MutableLiveData<Coordinate> = MutableLiveData(state.prevPos)
-    val prevPos: LiveData<Coordinate> = _prevPos
 
     private val _moveSignal: MutableLiveData<Boolean> = MutableLiveData(fireSignal)
     val moveSignal: LiveData<Boolean> = _moveSignal
 
     private val _xButtonSignal: MutableLiveData<Boolean> = MutableLiveData(xButtonClickedFire)
     val xButtonSignal: LiveData<Boolean> = _xButtonSignal
+
+    private val _aiSignal: MutableLiveData<Coordinate> = MutableLiveData(bestAIMoveCoordinate)
+    val aiSignal: LiveData<Coordinate> = _aiSignal
+
+    private val _resetSignal: MutableLiveData<Boolean> = MutableLiveData(fireSignal)
+    val resetSignal: LiveData<Boolean> = _resetSignal
 
 
     private val axisLong = 3
@@ -73,7 +70,6 @@ class GameViewModel: ViewModel() {
         else{
             state.boardCoordinates[state.selectedPos.xCoordinate][state.selectedPos.yCoordinate] = "x"
             _xButtonSignal.value = xButtonClickedFire
-
 
             if(shouldStartNewGame())
                 startNewGame()
@@ -126,92 +122,88 @@ class GameViewModel: ViewModel() {
 
     fun startNewGame() {
 
-        boardMap.keys.forEach {
-            boardMap[it] = ' '
-            setColorOfTheBox(it, false)
-        }
+        for (row in 0..state.boardCoordinates.size-1)
+            for (col in 0..state.boardCoordinates[0].size-1)
+                state.boardCoordinates[row][col] = " "
 
+        _resetSignal.value = fireSignal
         playerTurn()
     }
 
     private fun playerTurn() {
+        state.prevPos.xCoordinate = state.selectedPos.xCoordinate
+        state.prevPos.yCoordinate = state.selectedPos.yCoordinate
 
-        selectedCoordinate = ""
-        coordinates.forEach {
-            if(selectedCoordinate == "")
-                if(boardMap[it] == ' ')
-                    selectedCoordinate = it
-        }
+        state.selectedPos.xCoordinate = 1
+        state.selectedPos.yCoordinate = 1
 
-        setColorOfTheBox(selectedCoordinate, true)
+        _moveSignal.value = fireSignal
     }
 
 
 
-
-
-
-    fun minimax(playerMark: Char): Int{
+    fun minimax(playerMark: String): Int{
 
         recursionDepth = recursionDepth + 1
-        var avaliableAreas = ArrayList<String>()
-        boardMap.keys.forEach {
-            if(boardMap[it] == ' ')
-                avaliableAreas.add(it)
-        }
+
+        var avaliableAreas = ArrayList<Coordinate>()
+        for (row in 0..state.boardCoordinates.size-1)
+            for (col in 0..state.boardCoordinates[0].size-1)
+                if (state.boardCoordinates[row][col] == " ")
+                    avaliableAreas.add(Coordinate(row, col))
+
 
         // escape points of the recursion
-        if(terminateGame('x'))
+        if(terminateGame("x"))
             return -10
-        else if(terminateGame('o'))
+        else if(terminateGame("o"))
             return 10
         if(avaliableAreas.size == 0)
             return 0
 
 
-        var bestValue = if(playerMark == 'x') 100 else -100
-        avaliableAreas.forEach{ blankArea ->
-            boardMap[blankArea] = playerMark
+        var bestValue = if(playerMark == "x") 100 else -100
+        avaliableAreas.forEach{
 
-            if(playerMark == 'x')
-                bestValue = minOf(bestValue, minimax('o'))
+            state.boardCoordinates[it.xCoordinate][it.yCoordinate] = playerMark
+
+            if(playerMark == "x")
+                bestValue = minOf(bestValue, minimax("o"))
             else
-                bestValue = maxOf(bestValue, minimax('x'))
+                bestValue = maxOf(bestValue, minimax("x"))
 
-            boardMap[blankArea] = ' '
+            state.boardCoordinates[it.xCoordinate][it.yCoordinate] = " "
         }
         return bestValue
     }
 
     fun aiTurn(){
         var bestValue = -100
-        var bestMoveCoordinate = Coordinate()
         var bestDepth = 10000
 
-
-        for (row in 0..state.boardCoordinates.size){
-            for (col in 0..state.boardCoordinates[0].size){
+        for (row in 0..state.boardCoordinates.size-1){
+            for (col in 0..state.boardCoordinates[0].size-1){
                 if (state.boardCoordinates[row][col] == " "){
 
                     state.boardCoordinates[row][col] = "o"
 
                     recursionDepth = 0
-                    var moveValue = minimax('x')
+                    var moveValue = minimax("x")
 
                     state.boardCoordinates[row][col] = " "
 
                     if((moveValue > bestValue) || ((moveValue == bestValue) && (recursionDepth < bestDepth))){
                         bestDepth = recursionDepth
-                        bestMoveCoordinate.xCoordinate = row
-                        bestMoveCoordinate.yCoordinate = col
+                        bestAIMoveCoordinate.xCoordinate = row
+                        bestAIMoveCoordinate.yCoordinate = col
                         bestValue = moveValue
                     }
                 }
             }
         }
 
-        state.boardCoordinates[bestMoveCoordinate.xCoordinate][bestMoveCoordinate.yCoordinate] = "o"
-        // işaretlenen yeri o yap
+        state.boardCoordinates[bestAIMoveCoordinate.xCoordinate][bestAIMoveCoordinate.yCoordinate] = "o"
+        _aiSignal.value = bestAIMoveCoordinate
 
         if(shouldStartNewGame())
             startNewGame()

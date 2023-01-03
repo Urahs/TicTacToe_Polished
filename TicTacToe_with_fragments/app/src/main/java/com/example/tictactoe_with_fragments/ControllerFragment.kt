@@ -37,7 +37,7 @@ class ControllerFragment : Fragment() {
     }
 
     private fun onRestartButtonTapped() {
-        //gameViewModel.startNewGame()
+        gameViewModel.startNewGame()
     }
 
     private fun onActionButtonTapped() {

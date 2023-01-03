@@ -29,23 +29,40 @@ class BoardFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        gameViewModel.moveSignal.observe(viewLifecycleOwner) { TestFnc() }
+        gameViewModel.moveSignal.observe(viewLifecycleOwner) { changeColorsOfBoxs() }
         gameViewModel.xButtonSignal.observe(viewLifecycleOwner){ xButtonTapped() }
+        gameViewModel.aiSignal.observe(viewLifecycleOwner){ aiMove(it) }
+        gameViewModel.resetSignal.observe(viewLifecycleOwner){ resetGame() }
 
+    }
+
+    private fun resetGame() {
+        for (row in 0..gameViewModel.state.boardCoordinates.size-1) {
+            for (col in 0..gameViewModel.state.boardCoordinates[0].size - 1) {
+                var selectedBox = view?.findViewById<TextView>(resources.getIdentifier("box_$row$col", "id", context?.packageName))
+                selectedBox?.text = " "
+            }
+        }
+    }
+
+    private fun aiMove(aiMoveCoordinate: Coordinate) {
+        var relatedBox = view?.findViewById<TextView>(resources.getIdentifier("box_${aiMoveCoordinate.xCoordinate}${aiMoveCoordinate.yCoordinate}", "id", context?.packageName))
+        relatedBox?.text = "O"
     }
 
     private fun xButtonTapped() {
         //Log.d("test", "xButton tapped!!!")
-        val posX = gameViewModel.gameState.value!!.selectedPos.xCoordinate
-        val posY = gameViewModel.gameState.value!!.selectedPos.yCoordinate
+        val posX = gameViewModel.state.selectedPos.xCoordinate
+        val posY = gameViewModel.state.selectedPos.yCoordinate
         var selectedBox = view?.findViewById<TextView>(resources.getIdentifier("box_$posX$posY", "id", context?.packageName))
         selectedBox?.text = "X"
+        changeColorsOfBoxs()
     }
 
 
-    private fun TestFnc(){
-        setColorOfTheBox(gameViewModel.gameState.value!!.selectedPos, "#FF0000")
-        setColorOfTheBox(gameViewModel.gameState.value!!.prevPos, "#FFFFFF")
+    private fun changeColorsOfBoxs(){
+        setColorOfTheBox(gameViewModel.state.prevPos, "#E6548E")
+        setColorOfTheBox(gameViewModel.state.selectedPos, "#C60A55")
     }
 
     private fun setColorOfTheBox(coordinate: Coordinate, boxColor: String){

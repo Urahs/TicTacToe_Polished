@@ -1,5 +1,7 @@
 package com.example.tictactoe_with_fragments
 
+import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -14,13 +16,27 @@ class GameState(){
 
 class GameViewModel: ViewModel() {
 
+    private var recursionDepth = 0
+
     private val state: GameState = GameState()
+    private val xButtonClickedFire: Boolean = false
+    private val fireSignal: Boolean = false
 
     private val _gameState: MutableLiveData<GameState> = MutableLiveData(state)
     val gameState: LiveData<GameState> = _gameState
 
-    private val _test: MutableLiveData<Coordinate> = MutableLiveData(state.selectedPos)
-    val test: LiveData<Coordinate> = _test
+    private val _selectedPos: MutableLiveData<Coordinate> = MutableLiveData(state.selectedPos)
+    val selectedPos: LiveData<Coordinate> = _selectedPos
+
+    private val _prevPos: MutableLiveData<Coordinate> = MutableLiveData(state.prevPos)
+    val prevPos: LiveData<Coordinate> = _prevPos
+
+    private val _moveSignal: MutableLiveData<Boolean> = MutableLiveData(fireSignal)
+    val moveSignal: LiveData<Boolean> = _moveSignal
+
+    private val _xButtonSignal: MutableLiveData<Boolean> = MutableLiveData(xButtonClickedFire)
+    val xButtonSignal: LiveData<Boolean> = _xButtonSignal
+
 
     private val axisLong = 3
 
@@ -39,28 +55,73 @@ class GameViewModel: ViewModel() {
         else
             state.selectedPos.xCoordinate = (state.selectedPos.xCoordinate + moveStep + axisLong) % axisLong
 
-        _gameState.value = state
-        _test.value = state.selectedPos
+        //_gameState.value = state
+        //_selectedPos.value = state.selectedPos
+        //_prevPos.value = state.prevPos
+        _moveSignal.value = fireSignal
     }
 
 
-/*
+
     fun xButtonClicked() {
 
-        if(state.boardCoordinates[state.selectedPos.xCoordinate][state.selectedPos.yCoordinate] == " "){
-            // print toast message
+        Log.d("test", "xButton tapped!!!")
+
+        if(state.boardCoordinates[state.selectedPos.xCoordinate][state.selectedPos.yCoordinate] != " "){
+            //Toast.makeText(, "YOU WIN", Toast.LENGTH_SHORT).show() --->> toast a message here
         }
         else{
             state.boardCoordinates[state.selectedPos.xCoordinate][state.selectedPos.yCoordinate] = "x"
-            // seçili yeri x yap boardda
+            _xButtonSignal.value = xButtonClickedFire
+
 
             if(shouldStartNewGame())
                 startNewGame()
             else
                 aiTurn()
+
         }
+
     }
 
+    private fun shouldStartNewGame(): Boolean {
+
+        if(terminateGame("x")){
+            // player score güncelle
+            // toast mesage at
+            return true
+        }
+        else if(terminateGame("o")){
+            // ai score güncelle
+            // toast mesage at
+            return true
+        }
+
+        state.boardCoordinates.forEach { row ->
+            row.forEach { element ->
+                if (element == " ")
+                    return false
+            }
+        }
+
+        // tie toast mesajı at
+        return true
+    }
+
+    fun terminateGame(playerMark: String): Boolean{
+        // win conditions
+        if(((state.boardCoordinates[0][0] == playerMark) && (state.boardCoordinates[0][1] == playerMark) && (state.boardCoordinates[0][2] == playerMark)) ||
+            ((state.boardCoordinates[1][0] == playerMark) && (state.boardCoordinates[1][1] == playerMark) && (state.boardCoordinates[1][2] == playerMark)) ||
+            ((state.boardCoordinates[2][0] == playerMark) && (state.boardCoordinates[2][1] == playerMark) && (state.boardCoordinates[2][2] == playerMark)) ||
+            ((state.boardCoordinates[0][0] == playerMark) && (state.boardCoordinates[1][0] == playerMark) && (state.boardCoordinates[2][0] == playerMark)) ||
+            ((state.boardCoordinates[0][1] == playerMark) && (state.boardCoordinates[1][1] == playerMark) && (state.boardCoordinates[2][1] == playerMark)) ||
+            ((state.boardCoordinates[0][2] == playerMark) && (state.boardCoordinates[1][2] == playerMark) && (state.boardCoordinates[2][2] == playerMark)) ||
+            ((state.boardCoordinates[0][0] == playerMark) && (state.boardCoordinates[1][1] == playerMark) && (state.boardCoordinates[2][2] == playerMark)) ||
+            ((state.boardCoordinates[2][0] == playerMark) && (state.boardCoordinates[1][1] == playerMark) && (state.boardCoordinates[0][2] == playerMark)))
+            return true
+
+        return false
+    }
 
 
     fun startNewGame() {
@@ -85,26 +146,9 @@ class GameViewModel: ViewModel() {
         setColorOfTheBox(selectedCoordinate, true)
     }
 
-    private fun shouldStartNewGame(): Boolean {
 
-        if(terminateGame('x')){
-            binding.playerScoreTV.text = (++playerScore).toString()
-            Toast.makeText(applicationContext, "YOU WIN", Toast.LENGTH_SHORT).show()
-            return true
-        }
-        else if(terminateGame('o')){
-            binding.aiScoreTV.text = (++aiScore).toString()
-            Toast.makeText(applicationContext, "AI WINS", Toast.LENGTH_SHORT).show()
-            return true
-        }
 
-        boardMap.keys.forEach {
-            if(boardMap[it] == ' ')
-                return false
-        }
-        Toast.makeText(applicationContext, "TIE", Toast.LENGTH_SHORT).show()
-        return true
-    }
+
 
 
     fun minimax(playerMark: Char): Int{
@@ -141,43 +185,37 @@ class GameViewModel: ViewModel() {
 
     fun aiTurn(){
         var bestValue = -100
-        var bestMoveCoordinate = ""
+        var bestMoveCoordinate = Coordinate()
         var bestDepth = 10000
 
-        boardMap.keys.forEach {
-            if(boardMap[it] == ' '){
-                boardMap[it] = 'o'
 
-                recursionDepth = 0
-                var moveValue = minimax('x')
+        for (row in 0..state.boardCoordinates.size){
+            for (col in 0..state.boardCoordinates[0].size){
+                if (state.boardCoordinates[row][col] == " "){
 
-                boardMap[it] = ' '
+                    state.boardCoordinates[row][col] = "o"
 
-                // print for debug
-                //Log.d("test", "location: " + it + "     value: " + moveValue.toString() + "     depth: " + recursionDepth)
+                    recursionDepth = 0
+                    var moveValue = minimax('x')
 
-                if(moveValue > bestValue){
-                    bestDepth = recursionDepth
-                    bestMoveCoordinate = it
-                    bestValue = moveValue
-                }
-                else if ((moveValue == bestValue) && (recursionDepth < bestDepth)){
-                    bestDepth = recursionDepth
-                    bestMoveCoordinate = it
-                    bestValue = moveValue
+                    state.boardCoordinates[row][col] = " "
+
+                    if((moveValue > bestValue) || ((moveValue == bestValue) && (recursionDepth < bestDepth))){
+                        bestDepth = recursionDepth
+                        bestMoveCoordinate.xCoordinate = row
+                        bestMoveCoordinate.yCoordinate = col
+                        bestValue = moveValue
+                    }
                 }
             }
         }
 
-        boardMap[bestMoveCoordinate] = 'o'
-        val selectedBox = findViewById<ImageView>(resources.getIdentifier("box_${bestMoveCoordinate}", "id", packageName))
-        selectedBox.setImageResource(R.mipmap.oimage)
+        state.boardCoordinates[bestMoveCoordinate.xCoordinate][bestMoveCoordinate.yCoordinate] = "o"
+        // işaretlenen yeri o yap
 
         if(shouldStartNewGame())
             startNewGame()
         else
             playerTurn()
     }
-
- */
 }

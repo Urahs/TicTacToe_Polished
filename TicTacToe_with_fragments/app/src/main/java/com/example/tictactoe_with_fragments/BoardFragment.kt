@@ -29,28 +29,32 @@ class BoardFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        gameViewModel.test.observe(viewLifecycleOwner) {
-            setColorOfTheBox(it)
-        }
+        gameViewModel.moveSignal.observe(viewLifecycleOwner) { TestFnc() }
+        gameViewModel.xButtonSignal.observe(viewLifecycleOwner){ xButtonTapped() }
 
-        /*
-        gameViewModel.gameState.observe(viewLifecycleOwner) {
-            processGameStateChange(it)
-        }
-         */
+    }
+
+    private fun xButtonTapped() {
+        //Log.d("test", "xButton tapped!!!")
+        val posX = gameViewModel.gameState.value!!.selectedPos.xCoordinate
+        val posY = gameViewModel.gameState.value!!.selectedPos.yCoordinate
+        var selectedBox = view?.findViewById<TextView>(resources.getIdentifier("box_$posX$posY", "id", context?.packageName))
+        selectedBox?.text = "X"
+    }
+
+
+    private fun TestFnc(){
+        setColorOfTheBox(gameViewModel.gameState.value!!.selectedPos, "#FF0000")
+        setColorOfTheBox(gameViewModel.gameState.value!!.prevPos, "#FFFFFF")
+    }
+
+    private fun setColorOfTheBox(coordinate: Coordinate, boxColor: String){
+        var selectedBox = view?.findViewById<TextView>(resources.getIdentifier("box_${coordinate.xCoordinate}${coordinate.yCoordinate}", "id", context?.packageName))
+        selectedBox?.setBackgroundColor(Color.parseColor(boxColor))
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
-
-
-    private fun setColorOfTheBox(coordinate: Coordinate){
-        Log.d("test", "AAAAAAAAAAAAA")
-        var selectedBox = view?.findViewById<TextView>(resources.getIdentifier("box_${coordinate.xCoordinate}${coordinate.yCoordinate}", "id", context?.packageName))
-        var textBackGroundColor = "#00FF00" //= if(isSelected) "#00FF00" else "#FF0000"
-        selectedBox?.setBackgroundColor(Color.parseColor(textBackGroundColor))
-    }
-
 }

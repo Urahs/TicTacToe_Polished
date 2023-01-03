@@ -41,7 +41,7 @@ class ControllerFragment : Fragment() {
     }
 
     private fun onActionButtonTapped() {
-        //gameViewModel.xButtonClicked()
+        gameViewModel.xButtonClicked()
     }
 
     private fun onRightButtonTapped() {

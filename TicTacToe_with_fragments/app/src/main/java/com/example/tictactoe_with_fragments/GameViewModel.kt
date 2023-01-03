@@ -16,6 +16,8 @@ class GameState(){
 class GameViewModel: ViewModel() {
 
     private var recursionDepth = 0
+    var playerScore = 0
+    var aiScore = 0
     var bestAIMoveCoordinate = Coordinate(0,0)
 
     val state: GameState = GameState()
@@ -33,6 +35,9 @@ class GameViewModel: ViewModel() {
 
     private val _resetSignal: MutableLiveData<Boolean> = MutableLiveData(fireSignal)
     val resetSignal: LiveData<Boolean> = _resetSignal
+
+    private val _scoreSignal: MutableLiveData<Boolean> = MutableLiveData(fireSignal)
+    val scoreSignal: LiveData<Boolean> = _scoreSignal
 
 
     private val axisLong = 3
@@ -52,9 +57,7 @@ class GameViewModel: ViewModel() {
         else
             state.selectedPos.xCoordinate = (state.selectedPos.xCoordinate + moveStep + axisLong) % axisLong
 
-        //_gameState.value = state
-        //_selectedPos.value = state.selectedPos
-        //_prevPos.value = state.prevPos
+
         _moveSignal.value = fireSignal
     }
 
@@ -83,13 +86,15 @@ class GameViewModel: ViewModel() {
     private fun shouldStartNewGame(): Boolean {
 
         if(terminateGame("x")){
-            // player score güncelle
+            playerScore++
             // toast mesage at
+            _scoreSignal.value = fireSignal
             return true
         }
         else if(terminateGame("o")){
-            // ai score güncelle
+            aiScore++
             // toast mesage at
+            _scoreSignal.value = fireSignal
             return true
         }
 

@@ -1,8 +1,5 @@
 package com.example.tictactoe_with_fragments
 
-import android.util.Log
-import android.widget.Toast
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
@@ -17,42 +14,25 @@ class GameState(){
 class GameViewModel: ViewModel() {
 
     private var recursionDepth = 0
-    private var toastMessage = ""
+    private val axisLong = 3
     var playerScore = 0
     var aiScore = 0
     var bestAIMoveCoordinate = Coordinate(0,0)
 
     val state: GameState = GameState()
-    private val xButtonClickedFire: Boolean = false
-    private val fireSignal: Boolean = false
+    val moveSignal = MutableLiveData<Boolean>()
+    val xButtonSignal = MutableLiveData<Boolean>()
+    val resetSignal = MutableLiveData<Boolean>()
+    val scoreSignal = MutableLiveData<Boolean>()
+    val aiSignal = MutableLiveData<Coordinate>()
+    val toastMessageSignal = MutableLiveData<String>()
 
-    private val _moveSignal: MutableLiveData<Boolean> = MutableLiveData(fireSignal)
-    val moveSignal: LiveData<Boolean> = _moveSignal
-
-    private val _xButtonSignal: MutableLiveData<Boolean> = MutableLiveData(xButtonClickedFire)
-    val xButtonSignal: LiveData<Boolean> = _xButtonSignal
-
-    private val _aiSignal: MutableLiveData<Coordinate> = MutableLiveData(bestAIMoveCoordinate)
-    val aiSignal: LiveData<Coordinate> = _aiSignal
-
-    private val _resetSignal: MutableLiveData<Boolean> = MutableLiveData(fireSignal)
-    val resetSignal: LiveData<Boolean> = _resetSignal
-
-    private val _scoreSignal: MutableLiveData<Boolean> = MutableLiveData(fireSignal)
-    val scoreSignal: LiveData<Boolean> = _scoreSignal
-
-    private val _toastMessageSignal: MutableLiveData<String> = MutableLiveData(toastMessage)
-    val toastMessageSignal: LiveData<String> = _toastMessageSignal
-
-
-    private val axisLong = 3
 
     fun boxSelection(isHorizontal:Boolean, positiveDirection: Boolean) {
 
         var moveStep = -1
         if(positiveDirection)
             moveStep = 1
-
 
         state.prevPos.xCoordinate = state.selectedPos.xCoordinate
         state.prevPos.yCoordinate = state.selectedPos.yCoordinate
@@ -62,27 +42,22 @@ class GameViewModel: ViewModel() {
         else
             state.selectedPos.xCoordinate = (state.selectedPos.xCoordinate + moveStep + axisLong) % axisLong
 
-
-        _moveSignal.value = fireSignal
+        moveSignal.value = true
     }
-
-
 
     fun xButtonClicked() {
 
         if(state.boardCoordinates[state.selectedPos.xCoordinate][state.selectedPos.yCoordinate] != " "){
-            toastMessage = "You can't put X there!"
-            _toastMessageSignal.value = toastMessage
+            toastMessageSignal.value = "You can't put X there!"
         }
         else{
             state.boardCoordinates[state.selectedPos.xCoordinate][state.selectedPos.yCoordinate] = "x"
-            _xButtonSignal.value = xButtonClickedFire
+            xButtonSignal.value = true
 
             if(shouldStartNewGame())
                 startNewGame()
             else
                 aiTurn()
-
         }
     }
 
@@ -90,16 +65,14 @@ class GameViewModel: ViewModel() {
 
         if(terminateGame("x")){
             playerScore++
-            toastMessage = "YOU WIN!"
-            _toastMessageSignal.value = toastMessage
-            _scoreSignal.value = fireSignal
+            toastMessageSignal.value = "YOU WIN!"
+            scoreSignal.value = true
             return true
         }
         else if(terminateGame("o")){
             aiScore++
-            toastMessage = "AI WINS!"
-            _toastMessageSignal.value = toastMessage
-            _scoreSignal.value = fireSignal
+            toastMessageSignal.value = "AI WINS!"
+            scoreSignal.value = true
             return true
         }
 
@@ -110,8 +83,7 @@ class GameViewModel: ViewModel() {
             }
         }
 
-        toastMessage = "TIE!"
-        _toastMessageSignal.value = toastMessage
+        toastMessageSignal.value = "TIE!"
         return true
     }
 
@@ -130,14 +102,13 @@ class GameViewModel: ViewModel() {
         return false
     }
 
-
     fun startNewGame() {
 
         for (row in 0..state.boardCoordinates.size-1)
             for (col in 0..state.boardCoordinates[0].size-1)
                 state.boardCoordinates[row][col] = " "
 
-        _resetSignal.value = fireSignal
+        resetSignal.value = true
         playerTurn()
     }
 
@@ -148,10 +119,8 @@ class GameViewModel: ViewModel() {
         state.selectedPos.xCoordinate = 1
         state.selectedPos.yCoordinate = 1
 
-        _moveSignal.value = fireSignal
+        moveSignal.value = true
     }
-
-
 
     fun minimax(playerMark: String): Int{
 
@@ -214,7 +183,7 @@ class GameViewModel: ViewModel() {
         }
 
         state.boardCoordinates[bestAIMoveCoordinate.xCoordinate][bestAIMoveCoordinate.yCoordinate] = "o"
-        _aiSignal.value = bestAIMoveCoordinate
+        aiSignal.value = bestAIMoveCoordinate
 
         if(shouldStartNewGame())
             startNewGame()

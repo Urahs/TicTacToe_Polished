@@ -3,6 +3,7 @@ package com.example.tictactoe_with_fragments
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.appcompat.app.ActionBar
 import com.example.tictactoe_with_fragments.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -12,8 +13,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //_binding = ActivityMainBinding.inflate()
-        setContentView(R.layout.activity_main)
-
+        _binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        setTitle("Tic Tac Toe")
     }
 }

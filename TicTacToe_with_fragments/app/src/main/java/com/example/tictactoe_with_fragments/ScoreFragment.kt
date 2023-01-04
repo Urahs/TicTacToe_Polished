@@ -1,14 +1,12 @@
 package com.example.tictactoe_with_fragments
 
-import android.graphics.Color
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.activityViewModels
-import com.example.tictactoe_with_fragments.databinding.FragmentBoardBinding
 import com.example.tictactoe_with_fragments.databinding.FragmentScoreBinding
 
 class ScoreFragment : Fragment() {
@@ -29,13 +27,18 @@ class ScoreFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         gameViewModel.scoreSignal.observe(viewLifecycleOwner) { updateScoreTable() }
+        gameViewModel.toastMessageSignal.observe(viewLifecycleOwner){ displayToastMessage(it) }
+    }
+
+    private fun displayToastMessage(toastMessage: String) {
+        if(toastMessage != "")
+            Toast.makeText(context, toastMessage, Toast.LENGTH_SHORT).show()
     }
 
     private fun updateScoreTable() {
         binding.playerScoreTV.text = gameViewModel.playerScore.toString()
         binding.aiScoreTV.text = gameViewModel.aiScore.toString()
     }
-
 
     override fun onDestroyView() {
         super.onDestroyView()

@@ -60,7 +60,6 @@ class ControllerFragment : Fragment() {
         gameViewModel.boxSelection(false, false)
     }
 
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

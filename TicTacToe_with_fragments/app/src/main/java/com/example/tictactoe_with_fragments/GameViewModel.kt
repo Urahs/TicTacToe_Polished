@@ -1,6 +1,7 @@
 package com.example.tictactoe_with_fragments
 
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -16,6 +17,7 @@ class GameState(){
 class GameViewModel: ViewModel() {
 
     private var recursionDepth = 0
+    private var toastMessage = ""
     var playerScore = 0
     var aiScore = 0
     var bestAIMoveCoordinate = Coordinate(0,0)
@@ -38,6 +40,9 @@ class GameViewModel: ViewModel() {
 
     private val _scoreSignal: MutableLiveData<Boolean> = MutableLiveData(fireSignal)
     val scoreSignal: LiveData<Boolean> = _scoreSignal
+
+    private val _toastMessageSignal: MutableLiveData<String> = MutableLiveData(toastMessage)
+    val toastMessageSignal: LiveData<String> = _toastMessageSignal
 
 
     private val axisLong = 3
@@ -65,10 +70,9 @@ class GameViewModel: ViewModel() {
 
     fun xButtonClicked() {
 
-        Log.d("test", "xButton tapped!!!")
-
         if(state.boardCoordinates[state.selectedPos.xCoordinate][state.selectedPos.yCoordinate] != " "){
-            //Toast.makeText(, "YOU WIN", Toast.LENGTH_SHORT).show() --->> toast a message here
+            toastMessage = "You can't put X there!"
+            _toastMessageSignal.value = toastMessage
         }
         else{
             state.boardCoordinates[state.selectedPos.xCoordinate][state.selectedPos.yCoordinate] = "x"
@@ -80,20 +84,21 @@ class GameViewModel: ViewModel() {
                 aiTurn()
 
         }
-
     }
 
     private fun shouldStartNewGame(): Boolean {
 
         if(terminateGame("x")){
             playerScore++
-            // toast mesage at
+            toastMessage = "YOU WIN!"
+            _toastMessageSignal.value = toastMessage
             _scoreSignal.value = fireSignal
             return true
         }
         else if(terminateGame("o")){
             aiScore++
-            // toast mesage at
+            toastMessage = "AI WINS!"
+            _toastMessageSignal.value = toastMessage
             _scoreSignal.value = fireSignal
             return true
         }
@@ -105,7 +110,8 @@ class GameViewModel: ViewModel() {
             }
         }
 
-        // tie toast mesajı at
+        toastMessage = "TIE!"
+        _toastMessageSignal.value = toastMessage
         return true
     }
 

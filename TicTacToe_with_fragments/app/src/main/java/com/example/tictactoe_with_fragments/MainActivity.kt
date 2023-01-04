@@ -15,6 +15,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         _binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setTitle("Tic Tac Toe")
+
+        supportActionBar?.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM)
+        supportActionBar?.setCustomView(R.layout.action_bar_layout)
     }
 }

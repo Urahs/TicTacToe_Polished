@@ -27,12 +27,14 @@ class ScoreFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         gameViewModel.scoreSignal.observe(viewLifecycleOwner) { updateScoreTable() }
-        gameViewModel.toastMessageSignal.observe(viewLifecycleOwner){ displayToastMessage(it) }
+        gameViewModel.toastMessage.observe(viewLifecycleOwner){ displayToastMessage(it) }
     }
 
     private fun displayToastMessage(toastMessage: String) {
-        if(toastMessage != "")
+        if(toastMessage != ""){
             Toast.makeText(context, toastMessage, Toast.LENGTH_SHORT).show()
+            gameViewModel.toastMessage.value = ""
+        }
     }
 
     private fun updateScoreTable() {

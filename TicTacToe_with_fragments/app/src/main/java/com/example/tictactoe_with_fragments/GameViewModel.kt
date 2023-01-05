@@ -24,8 +24,7 @@ class GameViewModel: ViewModel() {
     val moveSignal = MutableLiveData<Boolean>()
     val resetSignal = MutableLiveData<Boolean>()
     val scoreSignal = MutableLiveData<Boolean>()
-    val toastMessageSignal = MutableLiveData<String>()
-
+    var toastMessage = MutableLiveData<String>()
 
     fun boxSelection(isHorizontal:Boolean, positiveDirection: Boolean) {
 
@@ -47,11 +46,10 @@ class GameViewModel: ViewModel() {
     fun xButtonClicked() {
 
         if(state.boardCoordinates[state.selectedPos.xCoordinate][state.selectedPos.yCoordinate] != " "){
-            toastMessageSignal.value = "You can't put X there!"
+            toastMessage.value = "You can't put X there!"
         }
         else{
             state.boardCoordinates[state.selectedPos.xCoordinate][state.selectedPos.yCoordinate] = "X"
-            //xButtonSignal.value = true
             boardSignal.value = true
 
             if(shouldStartNewGame())
@@ -65,13 +63,13 @@ class GameViewModel: ViewModel() {
 
         if(terminateGame("X")){
             playerScore++
-            toastMessageSignal.value = "YOU WIN!"
+            toastMessage.value = "YOU WIN!"
             scoreSignal.value = true
             return true
         }
         else if(terminateGame("O")){
             aiScore++
-            toastMessageSignal.value = "AI WINS!"
+            toastMessage.value = "AI WINS!"
             scoreSignal.value = true
             return true
         }
@@ -83,7 +81,7 @@ class GameViewModel: ViewModel() {
             }
         }
 
-        toastMessageSignal.value = "TIE!"
+        toastMessage.value = "TIE!"
         return true
     }
 

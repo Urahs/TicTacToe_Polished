@@ -29,11 +29,19 @@ class BoardFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         gameViewModel.moveSignal.observe(viewLifecycleOwner) { changeColorsOfBoxs() }
-        gameViewModel.xButtonSignal.observe(viewLifecycleOwner){ xButtonTapped() }
-        gameViewModel.aiSignal.observe(viewLifecycleOwner){ aiMove(it) }
         gameViewModel.resetSignal.observe(viewLifecycleOwner){ resetGame() }
+        gameViewModel.boardSignal.observe(viewLifecycleOwner){ refreshView() }
 
         setColorOfTheBox(gameViewModel.state.selectedPos, "#C60A55")
+    }
+
+    private fun refreshView() {
+        for (row in 0..gameViewModel.state.boardCoordinates.size-1) {
+            for (col in 0..gameViewModel.state.boardCoordinates[0].size - 1) {
+                var selectedBox = view?.findViewById<TextView>(resources.getIdentifier("box_$row$col", "id", context?.packageName))
+                selectedBox?.text = gameViewModel.state.boardCoordinates[row][col]
+            }
+        }
     }
 
     private fun resetGame() {
@@ -47,16 +55,17 @@ class BoardFragment : Fragment() {
 
     private fun aiMove(aiMoveCoordinate: Coordinate) {
         var relatedBox = view?.findViewById<TextView>(resources.getIdentifier("box_${aiMoveCoordinate.xCoordinate}${aiMoveCoordinate.yCoordinate}", "id", context?.packageName))
+
         relatedBox?.text = "O"
     }
 
     private fun xButtonTapped() {
-        //Log.d("test", "xButton tapped!!!")
         val posX = gameViewModel.state.selectedPos.xCoordinate
         val posY = gameViewModel.state.selectedPos.yCoordinate
         var selectedBox = view?.findViewById<TextView>(resources.getIdentifier("box_$posX$posY", "id", context?.packageName))
-        selectedBox?.text = "X"
-        changeColorsOfBoxs()
+
+        if(gameViewModel.state.boardCoordinates[posX][posY] != " ")
+            selectedBox?.text = "X"
     }
 
     private fun changeColorsOfBoxs(){

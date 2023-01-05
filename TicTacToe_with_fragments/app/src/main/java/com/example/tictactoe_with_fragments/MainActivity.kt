@@ -3,7 +3,9 @@ package com.example.tictactoe_with_fragments
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBar
+import androidx.fragment.app.activityViewModels
 import com.example.tictactoe_with_fragments.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {

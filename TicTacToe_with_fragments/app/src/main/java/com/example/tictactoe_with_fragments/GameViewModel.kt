@@ -8,7 +8,7 @@ class Coordinate(var xCoordinate: Int, var yCoordinate: Int)
 class GameState(){
     var prevPos = Coordinate(1, 1)
     var selectedPos = Coordinate(1, 1)
-    var boardCoordinates = Array(3) {Array(3, {" "})}
+    var boardCoordinates = Array(3) {Array(3) { " " } }
 }
 
 class GameViewModel: ViewModel() {
@@ -20,11 +20,10 @@ class GameViewModel: ViewModel() {
     var bestAIMoveCoordinate = Coordinate(0,0)
 
     val state: GameState = GameState()
+    val boardSignal = MutableLiveData<Boolean>()
     val moveSignal = MutableLiveData<Boolean>()
-    val xButtonSignal = MutableLiveData<Boolean>()
     val resetSignal = MutableLiveData<Boolean>()
     val scoreSignal = MutableLiveData<Boolean>()
-    val aiSignal = MutableLiveData<Coordinate>()
     val toastMessageSignal = MutableLiveData<String>()
 
 
@@ -51,8 +50,9 @@ class GameViewModel: ViewModel() {
             toastMessageSignal.value = "You can't put X there!"
         }
         else{
-            state.boardCoordinates[state.selectedPos.xCoordinate][state.selectedPos.yCoordinate] = "x"
-            xButtonSignal.value = true
+            state.boardCoordinates[state.selectedPos.xCoordinate][state.selectedPos.yCoordinate] = "X"
+            //xButtonSignal.value = true
+            boardSignal.value = true
 
             if(shouldStartNewGame())
                 startNewGame()
@@ -63,13 +63,13 @@ class GameViewModel: ViewModel() {
 
     private fun shouldStartNewGame(): Boolean {
 
-        if(terminateGame("x")){
+        if(terminateGame("X")){
             playerScore++
             toastMessageSignal.value = "YOU WIN!"
             scoreSignal.value = true
             return true
         }
-        else if(terminateGame("o")){
+        else if(terminateGame("O")){
             aiScore++
             toastMessageSignal.value = "AI WINS!"
             scoreSignal.value = true
@@ -134,23 +134,23 @@ class GameViewModel: ViewModel() {
 
 
         // escape points of the recursion
-        if(terminateGame("x"))
+        if(terminateGame("X"))
             return -10
-        else if(terminateGame("o"))
+        else if(terminateGame("O"))
             return 10
         if(avaliableAreas.size == 0)
             return 0
 
 
-        var bestValue = if(playerMark == "x") 100 else -100
+        var bestValue = if(playerMark == "X") 100 else -100
         avaliableAreas.forEach{
 
             state.boardCoordinates[it.xCoordinate][it.yCoordinate] = playerMark
 
-            if(playerMark == "x")
-                bestValue = minOf(bestValue, minimax("o"))
+            if(playerMark == "X")
+                bestValue = minOf(bestValue, minimax("O"))
             else
-                bestValue = maxOf(bestValue, minimax("x"))
+                bestValue = maxOf(bestValue, minimax("X"))
 
             state.boardCoordinates[it.xCoordinate][it.yCoordinate] = " "
         }
@@ -165,10 +165,10 @@ class GameViewModel: ViewModel() {
             for (col in 0..state.boardCoordinates[0].size-1){
                 if (state.boardCoordinates[row][col] == " "){
 
-                    state.boardCoordinates[row][col] = "o"
+                    state.boardCoordinates[row][col] = "O"
 
                     recursionDepth = 0
-                    var moveValue = minimax("x")
+                    var moveValue = minimax("X")
 
                     state.boardCoordinates[row][col] = " "
 
@@ -182,8 +182,8 @@ class GameViewModel: ViewModel() {
             }
         }
 
-        state.boardCoordinates[bestAIMoveCoordinate.xCoordinate][bestAIMoveCoordinate.yCoordinate] = "o"
-        aiSignal.value = bestAIMoveCoordinate
+        state.boardCoordinates[bestAIMoveCoordinate.xCoordinate][bestAIMoveCoordinate.yCoordinate] = "O"
+        boardSignal.value = true
 
         if(shouldStartNewGame())
             startNewGame()
